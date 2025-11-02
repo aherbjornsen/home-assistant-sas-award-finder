@@ -5,7 +5,8 @@
   "homeassistant": "2024.6.0",
   "render_readme": true,
   "zip_release": true,
-  "filename": "sas_award_finder-1.0.0.zip",
+  "filename": "sas_award_finder-1.0.1.zip",
   "iot_class": "cloud_polling",
-  "version": "1.0.0"
+  "version": "1.0.0",
+  "config_flow": true
 }
