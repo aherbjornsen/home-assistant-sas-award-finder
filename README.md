@@ -1,65 +1,77 @@
 # 🧳 SAS Award Finder (Home Assistant Integration)
 
-This custom integration fetches **award seat availability from SAS** (Scandinavian Airlines) and displays it as a sensor in Home Assistant.
+**SAS Award Finder** is a Home Assistant custom integration that fetches award seat availability from SAS (Scandinavian Airlines)
+and exposes it as sensors. Each sensor represents a combination of origin, destinations and month and provides detailed JSON attributes
+with outbound and inbound availability arrays suitable for dashboarding (table cards) and automations.
 
-You can add multiple sensors (e.g. OSL→LYR, OSL→EWR, etc.) — each fetching availability for the selected month.
+**Author:** AndersH
 
----
+## Features
+- Query SAS award availability for a given month and destinations
+- Support multiple destinations (comma-separated) per sensor (e.g. `EWR,JFK`)
+- Configurable from the UI (Config Flow)
+- Provides `outbound` and `inbound` arrays as attributes for easy table display
+- Polls the SAS API every hour (configurable in code)
 
-## ✈️ Features
-- Realtime award availability lookup from SAS API  
-- Multiple destinations per sensor  
-- Displays both **outbound** and **inbound** seats  
-- Configurable from the UI (no YAML)  
-- Optional alerts when seats become available  
+## Installation (HACS)
+1. In HACS, go to **Integrations → Custom repositories**.
+2. Add repository URL: `https://github.com/<yourusername>/home-assistant-sas-award-finder`
+   - Type: **Integration**
+3. Install **SAS Award Finder** from HACS.
+4. Restart Home Assistant.
+5. Go to **Settings → Devices & Services → + Add Integration → SAS Award Finder** and fill in the form.
 
----
+## YAML (if you prefer)
+This integration supports UI config via config flow. If you prefer YAML, you can still create sensor entries by using the platform.
+(Not required once the integration supports config flow.)
 
-## 🧩 Installation (via HACS)
-
-1. Go to **HACS → Integrations → Custom repositories**
-2. Add your repository URL  
-   Example:  
-https://github.com/<yourusername/home-assistant-sas-award-finder
-
-Type: `Integration`
-3. Click **Add**
-4. Then install **SAS Award Finder**
-5. Restart Home Assistant
-6. Go to **Settings → Devices & Services → + Add Integration → SAS Award Finder**
-
----
-
-## ⚙️ Configuration
-When adding the integration, specify:
-- **Origin** airport (e.g., `OSL`)
-- **Destinations** (comma separated, e.g., `EWR,JFK`)
-- **Month** (e.g., `2026-08`)
-- **Direct**: True/False
-- **Market** (default: `no-no`)
-
----
-
-## 🧱 Example Dashboard
-
+## Example Lovelace Table Card (flex-table-card)
 ```yaml
 type: custom:flex-table-card
 title: SAS OSL–LYR Award Availability
 entities:
-include: sensor.sas_award_finder_osl_lyr
+  include: sensor.sas_award_finder_osl_lyr
 columns:
-- name: Date
- data: date
-- name: Total
- data: availableSeatsTotal
-- name: AG
- data: AG
-- name: AP
- data: AP
+  - name: Date
+    data: date
+  - name: Total
+    data: availableSeatsTotal
+  - name: AG
+    data: AG
+  - name: AP
+    data: AP
 data_path: outbound
+```
 
-📦 Credits
+## Full-featured Automation Example (Alert when availability appears)
+This example sends a notification with the list of dates that have available seats for outbound flights.
+Replace `notify.mobile_app_yourphone` with your notify target.
+```yaml
+alias: "SAS Award Availability Alert - Full"
+trigger:
+  - platform: time_pattern
+    hours: "/6"  # every 6 hours
+condition: []
+action:
+  - variables:
+      sensor_entity: sensor.sas_award_finder_osl_lyr
+      outbound: "{ state_attr(sensor_entity, 'outbound') | default([]) }"
+      available_dates: >
+        { (outbound | selectattr('availableSeatsTotal', '>', 0) | map(attribute='date') | list) | join(', ') }
+  - choose:
+      - conditions:
+          - condition: template
+            value_template: "{ available_dates != '' }"
+        sequence:
+          - service: notify.mobile_app_yourphone
+            data:
+              title: "✈️ SAS Award Seats Available (OSL → LYR)"
+              message: "Available dates: { available_dates }"
+  - default: []
+```
 
-Developed by AndersH and ChatGPT
-Data provided by SAS API (unofficial)
+## License
+MIT License — see LICENSE file.
 
+## Notes
+This integration uses an unofficial SAS API endpoint discovered from the public site. Use responsibly and be mindful of API rate limits.

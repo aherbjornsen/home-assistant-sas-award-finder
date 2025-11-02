@@ -1,0 +1,19 @@
+{
+  "title": "SAS Award Finder",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Add SAS Award Finder Sensor",
+        "description": "Configure a new SAS award availability sensor.",
+        "data": {
+          "name": "Name",
+          "origin": "Origin Airport Code (e.g., OSL)",
+          "destinations": "Destination(s) (comma separated, e.g., EWR,JFK)",
+          "month": "Month (YYYY-MM)",
+          "direct": "Direct flights only",
+          "market": "Market (default: no-no)"
+        }
+      }
+    }
+  }
+}
