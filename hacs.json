@@ -1,0 +1,11 @@
+{
+  "name": "SAS Award Finder",
+  "domain": "sas_award_finder",
+  "country": "NO",
+  "homeassistant": "2024.6.0",
+  "render_readme": true,
+  "zip_release": true,
+  "filename": "sas_award_finder.zip",
+  "iot_class": "cloud_polling",
+  "version": "1.0.0"
+}
