@@ -71,7 +71,7 @@ action:
 ```
 
 ## License
-MIT License — see LICENSE file.
+GNU General Public License v3.0 — see LICENSE file.
 
 ## Notes
 This integration uses an unofficial SAS API endpoint discovered from the public site. Use responsibly and be mindful of API rate limits.
