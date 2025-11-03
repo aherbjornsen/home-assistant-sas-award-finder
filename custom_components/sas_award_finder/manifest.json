@@ -2,10 +2,9 @@
   "domain": "sas_award_finder",
   "name": "SAS Award Finder",
   "version": "1.0.0",
-  "documentation": "https://www.sas.no/award-finder",
-  "codeowners": [
-    "@AndersH"
-  ],
-  "iot_class": "cloud_polling",
-  "requirements": []
+  "documentation": "https://github.com/yourusername/home-assistant-sas-award-finder",
+  "requirements": ["aiohttp>=3.8.0"],
+  "dependencies": [],
+  "codeowners": ["@AndersH"],
+  "config_flow": true
 }
